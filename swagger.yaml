@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: IT Path Solutions
+  version: 1.0.0
+  description: Task Related APIs Documentation
+servers:
+  - url: http://localhost:4020/api
+
+components:
+  securitySchemes:
+    bearerAuth:
+      description: "#### Example: Bearer [token]"
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /users/registerUser:
+    post:
+      summary: User sign-up
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Sagar
+                email:
+                  type: string
+                  example: sagar@gmail.com
+                password:
+                  type: string
+      responses:
+        201:
+          description: User created
+        400:
+          description: Validation error
+
+  /users/login-user:
+    post:
+      summary: User sign-in
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: sagar@gmail.com
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid credentials
+
+  /users/update:
+    put:
+      summary: Update Information
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: sagar@gmail.com
+                name:
+                  type: string
+                  example: sagar
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid credentials
+
+  /users/get-user-details/{userId}:
+    get:
+      summary: Get Login User Details
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            example: 6678sdfsdsg3453sdefsd
+          required: true
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid credentials
+
+  /users/get-user-details/{room}:
+    get:
+      summary: Get Messages of Specific Room
+      tags:
+        - Chats
+      parameters:
+        - in: path
+          name: room
+          schema:
+            type: string
+            example: 6678sdfsdsg3453sdefsd
+          required: true
+        - in: query
+          name: page
+          schema:
+            type: number
+        - in: query
+          name: limit
+          schema:
+            type: number
+      responses:
+        200:
+          description: Success
+        400:
+          description: Invalid credentials
