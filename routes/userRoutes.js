@@ -6,10 +6,10 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.post(
-  "/registerUser",
+  "/",
   [
     check("name", "Username is required").not().isEmpty(),
-    check("email", "Email is required").not().isEmpty(),
+    check("email", "Email is required").not().isEmpty().isEmail(),
     check("password", "Password is required").not().isEmpty(),
     check("password", "Password must be at least 6 characters long").isLength({
       min: 6,
@@ -19,9 +19,9 @@ router.post(
 );
 
 router.post(
-  "/login-user",
+  "/login",
   [
-    check("email", "Email is required").not().isEmpty(),
+    check("email", "Email is required").not().isEmpty().isEmail(),
     check("password", "Password is required").not().isEmpty(),
     check("password", "Password must be at least 6 characters long").isLength({
       min: 6,
@@ -40,6 +40,6 @@ router.put(
 
   UserController.updateUser
 );
-router.get("/get-user-details/:userId", UserController.getUserDetails);
+router.get("/:userId", UserController.getUserDetails);
 
 export default router;

@@ -9,17 +9,14 @@ async function registerUser(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
-        success: false,
         msg: errors.array()[0].msg,
         data: null,
       });
     }
     const { name, email, password } = req.body;
     const isExist = await User.findOne({ email });
-    console.log("🚀 ~ registerUser ~ isExist:", isExist);
     if (isExist) {
       return res.status(400).json({
-        success: false,
         msg: "User already exist with this email",
         data: null,
       });
@@ -29,13 +26,11 @@ async function registerUser(req, res) {
     await newUser.save();
 
     return res.status(201).json({
-      success: true,
       msg: "Account Signed Up Successfully",
       data: newUser,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       msg: "We are facing difficulties while signup, Please try again later ",
       data: null,
     });
@@ -46,7 +41,6 @@ async function loginUser(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      success: false,
       msg: errors.array()[0].msg,
       data: null,
     });
@@ -59,7 +53,6 @@ async function loginUser(req, res) {
     console.log("🚀 ~ loginUser ~ user:", user);
     if (!user) {
       return res.status(400).json({
-        success: false,
         msg: "Invalid Email and Passwords",
         data: null,
       });
@@ -69,7 +62,6 @@ async function loginUser(req, res) {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({
-        success: false,
         msg: "Invalid Credentials",
         data: null,
       });
@@ -84,14 +76,12 @@ async function loginUser(req, res) {
       }
     );
     return res.status(200).json({
-      success: true,
       msg: "Congratulations! Login Successfully",
       data: { user, token: token },
     });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({
-      success: false,
       msg: "We are facing difficulties while login, Please try again later ",
       data: null,
     });
@@ -102,7 +92,6 @@ async function updateUser(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      success: false,
       msg: errors.array()[0].msg,
       data: null,
     });
@@ -114,7 +103,6 @@ async function updateUser(req, res) {
     let user = await User.findById(req.user.id).select("-password");
     if (!user) {
       return res.status(404).json({
-        success: false,
         msg: "User Details Not Found",
         data: null,
       });
@@ -126,14 +114,12 @@ async function updateUser(req, res) {
     await user.save();
 
     return res.status(200).json({
-      success: true,
       msg: "Congratulations! Information updated",
       data: user,
     });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({
-      success: false,
       msg: "We are facing difficulties while updating an information, Please try again later ",
       data: null,
     });
@@ -144,13 +130,11 @@ async function getUserDetails(req, res) {
     const user = await User.findById(req.params.userId).select("-password");
 
     return res.status(200).json({
-      success: true,
       msg: "Congratulations! Information Fetched",
       data: user,
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       msg: "We are facing difficulties while fetching details of a User , Please try again later ",
       data: null,
     });

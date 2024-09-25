@@ -5,6 +5,6 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/get-messages/:room", ChatController.getMessages);
+router.get("/:room", ChatController.getMessages);
 
 export default router;

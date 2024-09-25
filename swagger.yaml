@@ -15,7 +15,7 @@ components:
       bearerFormat: JWT
 
 paths:
-  /users/registerUser:
+  /users:
     post:
       summary: User sign-up
       tags:
@@ -41,7 +41,7 @@ paths:
         400:
           description: Validation error
 
-  /users/login-user:
+/users/login:
     post:
       summary: User sign-in
       tags:
@@ -90,7 +90,9 @@ paths:
         400:
           description: Invalid credentials
 
-  /users/get-user-details/{userId}:
+  
+
+  /users/{userId}:
     get:
       summary: Get Login User Details
       tags:
@@ -108,7 +110,7 @@ paths:
         400:
           description: Invalid credentials
 
-  /users/get-user-details/{room}:
+  /chats/{room}:
     get:
       summary: Get Messages of Specific Room
       tags:
@@ -118,7 +120,7 @@ paths:
           name: room
           schema:
             type: string
-            example: 6678sdfsdsg3453sdefsd
+            example: Tug-Of-War
           required: true
         - in: query
           name: page

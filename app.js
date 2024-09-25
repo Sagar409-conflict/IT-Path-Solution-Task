@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 const swaggerDocument = YAML.load("./swagger.yaml");
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/users", userRoutes);
-app.use("/api/chat", chatRoutes);
+app.use("/api/chats", chatRoutes);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -49,15 +49,20 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", async ({ room, message }) => {
-    const msgPayload = {
-      sender: socket.user.id,
-      content: message,
-      room,
-    };
-    const newMessage = new Chat(msgPayload);
-    await newMessage.save();
-    console.log(`Message from ${socket.id}: ${msgPayload}`);
-    io.to(room).emit("message", msgPayload);
+    try {
+      const msgPayload = {
+        sender: socket.user.id,
+        content: message,
+        room,
+      };
+      const newMessage = new Chat(msgPayload);
+      await newMessage.save();
+      console.log(`Message from ${socket.id}: ${msgPayload}`);
+      io.to(room).emit("message", msgPayload);
+    } catch (error) {
+      console.error("Error saving message:", error);
+      socket.emit("error", { message: "Failed to send message" });
+    }
   });
   socket.on("disconnect", () => {
     console.log(`${socket.id} has disconnected`);

@@ -16,35 +16,30 @@ async function getMessages(req, res) {
       .skip((page - 1) * limit)
       .exec();
 
-    if (chat.length > 0) {
-      let result = chat.map((element) => {
-        return { ...new ChatResource(element) };
-      });
-      let totalRecords = await Chat.find({ room }).countDocuments();
-      console.log("🚀 ~ getMessages ~ totalRecords:", totalRecords);
-      return res.status(200).json({
-        success: true,
-        msg: `Here we have all messages of ${room}, successfully`,
-        data: {
-          result,
-          meta: {
-            totalPages: Math.ceil(totalRecords / limit),
-            currentPage: Math.abs(page),
-            recordsPerPage: Math.abs(limit),
-          },
-        },
-      });
-    } else {
+    if (!chat.length) {
       return res.status(404).json({
-        success: false,
         msg: `${room} room is empty, there is no any conversation`,
         data: null,
       });
     }
+
+    let result = chat.map((element) => {
+      return { ...new ChatResource(element) };
+    });
+    let totalRecords = await Chat.find({ room }).countDocuments();
+    return res.status(200).json({
+      msg: `Here we have all messages of ${room}, successfully`,
+      data: {
+        result,
+        meta: {
+          totalPages: Math.ceil(totalRecords / limit),
+          currentPage: Math.abs(page),
+          recordsPerPage: Math.abs(limit),
+        },
+      },
+    });
   } catch (error) {
-    console.log("🚀 ~ getMessages ~ error:", error);
     res.status(500).json({
-      success: false,
       msg: `We are facing difficulties while fetching messages from ${room} room  , Please try again later`,
       data: null,
     });
